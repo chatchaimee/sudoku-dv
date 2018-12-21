@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
-// import { connect } from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { pick } from 'lodash';
 import styled from 'styled-components';
-import axios from 'axios';
 
-// import { getBoard, setBoard, validate, setTimer } from './redux';
-import validate from './validate';
+import { getBoard, setBoard, validate, setTimer } from './redux';
 import Cell from '../../components/Cell';
 
 const Wrapper = styled.div`
@@ -33,152 +31,7 @@ const Wrapper = styled.div`
   }
 `;
 
-// Use hook (new)
-const createUseTimer = () => {
-  let interval;
-  let localTimer = 0;
-  return () => {
-    const [timer, setTimer] = useState(0);
-    console.log('use');
-    useEffect(() => {
-      console.log('set');
-      interval = setInterval(() => {
-        console.log('tick', localTimer);
-        localTimer = localTimer + 1;
-        setTimer(localTimer);
-      }, 1000);
-      return () => {
-        console.log('clear');
-        clearInterval(interval);
-      };
-    }, []);
-    const stopTimer = () => clearInterval(interval);
-    return [timer, stopTimer];
-  };
-};
-
-const useTimer = createUseTimer();
-
-const useBoard = (id, stopTimer) => {
-  const levelMap = {
-    1: 'http://www.mocky.io/v2/5c1b2f393300005f007fd622',
-    2: 'http://www.mocky.io/v2/5c1c4bb43100005500103ff9'
-  };
-  const [board, setBoard] = useState({
-    board: [],
-    initial: [],
-    loading: false,
-    error: false
-  });
-  useEffect(
-    () => {
-      axios
-        .get(levelMap[id])
-        .then(resp => setBoard(resp.data))
-        .catch(() => {
-          board.isError = true;
-          setBoard(board);
-        });
-    },
-    [id]
-  );
-  return [
-    board.board,
-    board.initial,
-    board.loading,
-    board.isError,
-    board.isValid,
-    (i, j) => {
-      board.board[i][j] = (board.board[i][j] + 1) % 5;
-      setBoard(board);
-    },
-    () => {
-      const isValid = validate(board.board);
-      if (isValid) {
-        stopTimer();
-      }
-      board.isValid = isValid;
-      setBoard(board);
-      return isValid;
-    }
-  ];
-};
-
-/*const useTimer = () => {
-  const [timer, setTimer] = useState(0);
-  let interval;
-
-  useEffect(() => {
-    interval = setInterval(() => {
-      setTimer(timer + 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  });
-
-  const stopTimer = clearInterval(interval);
-
-  return [timer, stopTimer];
-};
-
-const useInitialBoard = (getBoard, id) => {
-  useEffect(() => {
-    getBoard(id);
-  }, []);
-};*/
-
-const handleClick = (setBoard, i, j) => {
-  setBoard(i, j);
-};
-
-const handleValidateClick = (board, validate) => {
-  validate(board);
-};
-
-const App = props => {
-  const id = parseInt(props.match.params.levelId);
-  const [timer, stopTimer] = useTimer();
-  const [
-    board,
-    initial,
-    boardLoading,
-    isError,
-    isValid,
-    setBoard,
-    validate
-  ] = useBoard(parseInt(id), stopTimer);
-
-  return (
-    <Wrapper>
-      <p>{timer} sec</p>
-      <div className="board">
-        {isError && <p>Error!</p>}
-        {!boardLoading &&
-          board.map((row, i) => {
-            return row.map((number, j) => {
-              return (
-                <Cell
-                  key={`cell-${i}-${j}`}
-                  isInitial={initial[i][j]}
-                  number={number}
-                  handleClick={() => handleClick(setBoard, i, j)}
-                />
-              );
-            });
-          })}
-      </div>
-      <p>{isValid ? 'Board is valid!' : 'Board is invalid!'}</p>
-      <button onClick={() => handleValidateClick(board, validate)}>
-        Validate
-      </button>
-    </Wrapper>
-  );
-};
-
-// Use class (old)
-/*class App extends Component {
+class App extends Component {
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -243,10 +96,10 @@ const App = props => {
       </Wrapper>
     );
   }
-}*/
+}
 
 // Short
-/*const mapStateToProps = state => {
+const mapStateToProps = state => {
   return pick(state, [
     'boardLoading',
     'board',
@@ -255,15 +108,15 @@ const App = props => {
     'isValid',
     'isError'
   ]);
-};*/
+};
 
 // Short
-/*const mapDispatchToProps = {
+const mapDispatchToProps = {
   getBoard,
   setBoard,
   validate,
   setTimer
-};*/
+};
 
 // Long
 /*const mapStateToProps = state => ({
@@ -281,9 +134,7 @@ const App = props => {
   };
 };*/
 
-/*export default connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(App);*/
-
-export default App;
+)(App);
