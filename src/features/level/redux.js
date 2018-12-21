@@ -15,6 +15,7 @@ const initialState = {
   isValid: false
 };
 
+// Reducer
 export default (state = initialState, action) => {
   switch (action.type) {
     case 'GET_BOARD_PENDING':
@@ -66,6 +67,7 @@ const levelMap = {
   2: 'http://www.mocky.io/v2/5c1c4bb43100005500103ff9'
 };
 
+// Action creator
 export const getBoard = id => {
   return {
     type: 'GET_BOARD',
@@ -89,7 +91,7 @@ export const validate = () => {
 export const setBoard = (i, j) => {
   return {
     type: 'SET_BOARD',
-    i, // i: i
-    j // j: j
+    i, // same -> i: i
+    j // same -> j: j
   };
 };

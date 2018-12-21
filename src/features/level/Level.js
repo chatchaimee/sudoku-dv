@@ -98,7 +98,6 @@ class App extends Component {
   }
 }
 
-// Short
 const mapStateToProps = state => {
   return pick(state, [
     'boardLoading',
@@ -110,29 +109,12 @@ const mapStateToProps = state => {
   ]);
 };
 
-// Short
 const mapDispatchToProps = {
   getBoard,
   setBoard,
   validate,
   setTimer
 };
-
-// Long
-/*const mapStateToProps = state => ({
-  board: state.board,
-  initial: state.initial,
-  timer: state.timer,
-  isValid: state.isValid
-});*/
-
-// Long
-/*const mapDispatchToProps = dispatch => {
-  return {
-    setBoard: (i, j) => dispatch(setBoard(i, j)),
-    validate: () => dispatch(validate())
-  };
-};*/
 
 export default connect(
   mapStateToProps,
